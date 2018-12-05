@@ -69,16 +69,17 @@ Before registering a Runner, you need to first:
 
 3. Enter the token you obtained to register the Runner:
 
-    ```bash
-    Please enter the gitlab-ci token for this runner
+    ```txt
+    Please enter the gitlab-ci token for this runner  
     xxx
     ```
+
     *notes: You can obtain the token at the same time at step 2.*
 
 4. Enter a description (i.e. runner name) for the Runner, you can change this later in GitLab’s UI:
 
-    ```bash
-    Please enter the gitlab-ci description for this runner
+    ```txt
+    Please enter the gitlab-ci description for this runner  
     [hostame] my-runner
     ```
 
@@ -115,7 +116,7 @@ Before registering a Runner, you need to first:
 
 - Run the GitLab Runner as a service:
 
-    1. Install GitLab Runner as a service:
+    1. Install GitLab Runner as a [system service](https://docs.gitlab.com/runner/configuration/init.html):
 
         ```bash
         sudo gitlab-runner install -n "<service name>" -u <user-name>
@@ -125,6 +126,7 @@ Before registering a Runner, you need to first:
         ```bash
         sudo gitlab-runner start -n "<service name>"
         ```
+    *Notes: These [service-related commands](https://docs.gitlab.com/runner/commands/README.html#service-related-commands) are deprecated and will be removed in one of the upcoming releases.*
 
 For more GitLab Runner commands, you can visit [here](https://docs.gitlab.com/runner/commands/README.html).
 
@@ -176,34 +178,59 @@ For more docker executor information, please visit [here](https://docs.gitlab.co
 
 ## FAQ
 
-- When using docker executor runner in ubuntu 18.04, the runner can't access to the Internet.
+### When using docker executor runner in ubuntu 18.04, the runner can't access to the Internet
 
-    There is an DNS issue when using ubuntu 18.04 with Docker, you can refer to [here](https://github.com/docker/libnetwork/issues/2187) for more detail information.
+There is an DNS issue when using ubuntu 18.04 with Docker, you can refer to [here](https://github.com/docker/libnetwork/issues/2187) for more detail information.
 
-    The following error may occur in the pipeline:
+The following error may occur in the pipeline:
 
-        fatal: unable to access 'https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@code.siemens.com/zhen.xie/iavgitlabrunnertest.git/': Could not resolve host: code.siemens.com
+    fatal: unable to access 'https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@code.siemens.com/zhen.xie/iavgitlabrunnertest.git/': Could not resolve host: code.siemens.com
 
-    You can resolve this problem by adding ```dns = ["***.***.***.***"]``` in the runner's config file (it usually can be found in ```/etc/gitlab-runner/config.toml```) to change the docker container dns.
+You can resolve this problem by adding ```dns = ["***.***.***.***"]``` in the runner's config file (it usually can be found in ```/etc/gitlab-runner/config.toml```) to change the docker container dns.
 
-    *Tips: You can obtain the detail network information by command ```nmcli dev show```, and then add the effective dns address to the relevant runner config  section in ```config.toml```*
+*Tips: You can obtain the detail network information by command ```nmcli dev show```, and then add the effective dns address to the relevant runner config  section in ```config.toml```*
 
-- "```JAVA_HOME``` is not set and no java command could be foune in your PATH" when running the pipeline
+### "```JAVA_HOME``` is not set and no java command could be foune in your PATH" when running the pipeline
 
-    This error usually occur when runner uses shell executor, you can set the ```JAVA_HOME```  in the ```GitLab page -> Settings -> CI/CD -> Variables```.
+This error usually occur when runner uses shell executor, you can set the ```JAVA_HOME```  in the ```GitLab page -> Settings -> CI/CD -> Variables```.
 
-- Where the caches are stored?
+### How should I configure my GitLab Runner
 
-    Refer to https://docs.gitlab.com/ee/ci/caching/#where-the-caches-are-stored.
+Refer to <https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section>
 
-- How to clear the cache
+### How often does the Runner check the new jobs from GitLab instance
 
-    Refer to https://docs.gitlab.com/ee/ci/caching/#clearing-the-cache.
+The ```check_interval``` attribute in [config.toml](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section) will determine the interval, its default value is 3 seconds, but it just for one worker (there are many runners defined in ```config.toml```, we call them workers). If there are many workers, each worker (worker A ---> worker B) interval is **check_interval / worker_nums**, but it still takes the ```check_interval``` time for one worker to request next job (worker A ---> worker A). You can see [here](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#how-check_interval-works) for more information.
 
-- What is the priority of variables in GitLab Runner?
+### What is the ```concurrent``` in ```config.toml```
 
-    Refer to https://docs.gitlab.com/ee/ci/variables/#priority-of-variables
+```concurrent``` limits how many jobs globally can be run concurrently. There are some examples (trigger 2 jobs concurrently) for understanding it easily.
 
-- What are the predefined variables in GitLab Runner?
+- concurrent = 1, one shell runner and the other is docker runner
 
-    Refer to https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables.
+    2 jobs were tagged by different runners (one is shell runner, the other is docker runner), only one runner will take the jobs, the other is pending.
+
+- concurrent = 2, one shell runner and the other is docker runner
+
+    2 jobs were tagged by different runners (one is shell runner, the other is docker runner),
+    each runner can take each job concurrently.
+
+- concurrent = 2, only one docker runner
+
+    2 jobs were tagged by docker runner, this two jobs can concurrently be taken by the runner, and you can see the information "Running on runner-runnner-xxx-project-xxx-concurrent-0" and "Running on runner-runnner-xxx-project-xxx-concurrent-1" in pipeline console at first.
+
+### Where the caches are stored
+
+Refer to <https://docs.gitlab.com/ee/ci/caching/#where-the-caches-are-stored.>
+
+### How to clear the cache
+
+Refer to <https://docs.gitlab.com/ee/ci/caching/#clearing-the-cache.>
+
+### What is the priority of variables in GitLab Runner
+
+Refer to <https://docs.gitlab.com/ee/ci/variables/#priority-of-variables>
+
+### What are the predefined variables in GitLab Runner
+
+Refer to <https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables.>
