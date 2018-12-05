@@ -65,7 +65,7 @@ Before registering a Runner, you need to first:
     ```
     *Notes: You can obtain the URL by ```GitLab page -> Settings -> CI/CD -> Runners``` if you have access to it.*
 
-    ![RegisterRunners](RegisterRunner.PNG)
+    ![RegisterRunners](/resources/pictures/RegisterRunner.PNG)
 
 3. Enter the token you obtained to register the Runner:
 
