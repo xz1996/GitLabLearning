@@ -134,9 +134,9 @@ For more GitLab Runner commands, you can visit [here](https://docs.gitlab.com/ru
 
 ### Shell Executor
 
-    The source project is checked out to: ```<working-directory>/builds/<short-token>/<concurrent-id>/<namespace>/<project-name>```.
+The source project is checked out to: ```<working-directory>/builds/<short-token>/<concurrent-id>/<namespace>/<project-name>```.
 
-    The caches for project are stored in ```<working-directory>/cache/<namespace>/<project-name>```.
+The caches for project are stored in ```<working-directory>/cache/<namespace>/<project-name>```.
 
 For more shell executor information, please visit [here](https://docs.gitlab.com/runner/executors/shell.html).
 
