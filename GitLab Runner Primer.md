@@ -180,7 +180,7 @@ For more docker executor information, please visit [here](https://docs.gitlab.co
 
 ### When using docker executor runner in ubuntu 18.04, the runner can't access to the Internet
 
-There is an DNS issue when using ubuntu 18.04 with Docker, you can refer to [here](https://github.com/docker/libnetwork/issues/2187) for more detail information.
+There is a DNS issue when using ubuntu 18.04 with Docker, you can refer to [here](https://github.com/docker/libnetwork/issues/2187) for more detail information.
 
 The following error may occur in the pipeline:
 
