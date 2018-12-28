@@ -221,11 +221,13 @@ The ```check_interval``` attribute in [config.toml](https://docs.gitlab.com/runn
 
 ### Where the caches are stored
 
-Refer to <https://docs.gitlab.com/ee/ci/caching/#where-the-caches-are-stored.>
+Refer to <https://docs.gitlab.com/ee/ci/caching/#where-the-caches-are-stored>
 
 ### How to clear the cache
 
-Refer to <https://docs.gitlab.com/ee/ci/caching/#clearing-the-cache.>
+Refer to <https://docs.gitlab.com/ee/ci/caching/#clearing-the-cache>
+
+*Note that on the next push, your CI/CD job will use a new cache.*
 
 ### What is the priority of variables in GitLab Runner
 
@@ -233,4 +235,13 @@ Refer to <https://docs.gitlab.com/ee/ci/variables/#priority-of-variables>
 
 ### What are the predefined variables in GitLab Runner
 
-Refer to <https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables.>
+Refer to <https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables>
+
+### I can't build docker when my runner is docker executor
+
+This is "dind (Docker in Docker)" problem, The following error may occur in the pipeline:
+
+    Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+    time="2018-12-17T11:12:33Z" level=error msg="failed to dial gRPC: cannot connect to the Docker daemon. Is 'docker daemon' running on this host?: dial unix  
+
+You can resolve this problem by using docker socket binding, for example, you can add ```volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]``` in ```config.toml```, more detail information, please refer to <https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor>.
