@@ -225,7 +225,7 @@ Refer to <https://docs.gitlab.com/ee/ci/caching/#where-the-caches-are-stored>
 
 ### How to clear the cache
 
-Refer to <https://docs.gitlab.com/ee/ci/caching/#clearing-the-cache>
+The caches will never expire, and only take effect on one pipeline. If you push a new commit and the new pipeline will use a new cache, whose name is "(cache-key)-(increased-num)", and the "increased-num" will plus 1 on the next push. To avoid the Runner being filled with caches, we need to clear them  periodically. You can refer to <https://docs.gitlab.com/ee/ci/caching/#clearing-the-cache> for the clear cache methods.
 
 *Note that on the next push, your CI/CD job will use a new cache.*
 
