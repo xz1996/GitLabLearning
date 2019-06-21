@@ -27,7 +27,7 @@ To install the Runner:
         ```
 
     - Install specifice version
-  
+
         ```bash
         # for DEB based systems
         apt-cache madison gitlab-runner
@@ -70,7 +70,7 @@ Before registering a Runner, you need to first:
 3. Enter the token you obtained to register the Runner:
 
     ```txt
-    Please enter the gitlab-ci token for this runner  
+    Please enter the gitlab-ci token for this runner
     xxx
     ```
 
@@ -79,7 +79,7 @@ Before registering a Runner, you need to first:
 4. Enter a description (i.e. runner name) for the Runner, you can change this later in GitLab’s UI:
 
     ```txt
-    Please enter the gitlab-ci description for this runner  
+    Please enter the gitlab-ci description for this runner
     [hostame] my-runner
     ```
 
@@ -121,11 +121,13 @@ Before registering a Runner, you need to first:
         ```bash
         sudo gitlab-runner install -n "<service name>" -u <user-name>
         ```
+
     2. Start the GitLab Runner service:
 
         ```bash
         sudo gitlab-runner start -n "<service name>"
         ```
+
     *Notes: These [service-related commands](https://docs.gitlab.com/runner/commands/README.html#service-related-commands) are deprecated and will be removed in one of the upcoming releases.*
 
 For more GitLab Runner commands, you can visit [here](https://docs.gitlab.com/runner/commands/README.html).
@@ -154,22 +156,26 @@ For more shell executor information, please visit [here](https://docs.gitlab.com
 
     When using the ```docker``` or ```docker+machine``` executors, you can set the ```pull_policy``` parameter  which defines how the Runner will work when pulling Docker images (for both image and services keywords). The pull_policy has 3 modes: ```always``` (default value), ```if-not-present``` and ```never```.
 
-    ```always``` — Runner will always pull the image from remote.  
-    ```if-not-present``` — Runner will check if the image is present locally at first. If it is, then the local version of image will be used. Otherwise, the Runner will try to pull the image.  
+    ```always``` — Runner will always pull the image from remote.
+    ```if-not-present``` — Runner will check if the image is present locally at first. If it is, then the local version of image will be used. Otherwise, the Runner will try to pull the image.
     ```never``` — Runner will always use local images and never pull from remote.
 
 - [Helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#helper-image)
 
     When one of ```docker```, ```docker+machine``` or ```kubernetes``` executors is used, GitLab Runner uses a specific container to handle Git, artifacts and cache operations. You can find the images by
+
     ```bash
     sudo docker images
     ```
+
     and the result may be:
+
     ```bash
     REPOSITORY                          TAG
     gitlab/gitlab-runner-helper     x86_64-3afdaba6
     gitlab/gitlab-runner-helper     x86_64-cf91d5e1
     ```
+
     You can also customize the helper image and override it in Runner's ```config.toml```.
 
 For more docker executor information, please visit [here](https://docs.gitlab.com/runner/executors/docker.html#workflow).
@@ -229,7 +235,7 @@ The caches will never expire, and only take effect on one pipeline. If you push 
 
 ### What is the priority of variables in GitLab Runner
 
-Refer to <https://docs.gitlab.com/ee/ci/variables/#priority-of-variables>
+Refer to <https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables>
 
 ### What are the predefined variables in GitLab Runner
 
@@ -240,6 +246,16 @@ Refer to <https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environm
 This is "dind (Docker in Docker)" problem, The following error may occur in the pipeline:
 
     Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
-    time="2018-12-17T11:12:33Z" level=error msg="failed to dial gRPC: cannot connect to the Docker daemon. Is 'docker daemon' running on this host?: dial unix  
+    time="2018-12-17T11:12:33Z" level=error msg="failed to dial gRPC: cannot connect to the Docker daemon. Is 'docker daemon' running on this host?: dial unix
 
 You can resolve this problem by using docker socket binding, for example, you can add ```volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]``` in ```config.toml```, more detail information, please refer to <https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor>.
+
+### How to use ```git clone``` in the container of jobs
+
+If you want to clone some code(e.g. shell or python scripts) in the container of jobs, firstly you need to ensure that you will have access to clone the code in your host machine, then you can mount you secret into the container, for example, you clone the code by ssh and your ssh secret directory is ```home/<user>/.ssh```, you can add the configuration in ```config.toml``` like this:
+
+```toml
+volumes = ["/home/x1twbm/.ssh:/root/.ssh:ro"]
+```
+
+Then the container of job can have access to clone the specified code.
