@@ -54,7 +54,7 @@
 3. 输入你的注册token：
 
   ```bash
-  Please enter the gitlab-ci token for this runner  
+  Please enter the gitlab-ci token for this runner
   xxx
   ```
   *在步骤2中你也可以同时看到 token信息*
@@ -62,7 +62,7 @@
 4. 输入对这个Runner的表述（同时也是这个Runner的名字），当然，你也可以稍后在GitLab page上修改它：
 
   ```bash
-  Please enter the gitlab-ci description for this runner  
+  Please enter the gitlab-ci description for this runner
   [hostame] my-runner
   ```
 
@@ -196,7 +196,7 @@ fatal: unable to access 'https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@code.sieme
 
 ### 怎样清除cache
 
-注意cache是没有过期时间的，而且每一次新的push触发的pipeline，都会重新生成cache，重新生成的cache的名字为“<cache-key>-<num>”，其中num是随着push数量递增的。如果不去清除cache，cache会永久保留在Runner上，日积月累会填满存储空间的，因此最好隔一段时间进行一次清除，清除方法请参考<https://docs.gitlab.com/ee/ci/caching/#clearing-the-cache>，或者使用[clear_volumes.sh](https://github.com/xz1996/GitLabLearning/blob/master/util/clear_volumes.sh) 这个简单脚本来处理它。
+注意cache是没有过期时间的，而且每一次新的push触发的pipeline，都会重新生成cache，重新生成的cache的名字为“<cache-key>-<num>”，其中num是随着push数量递增的。如果不去清除cache，cache会永久保留在Runner上，日积月累会填满存储空间的，因此最好隔一段时间进行一次清除，清除方法请参考<https://docs.gitlab.com/ee/ci/caching/#clearing-the-cache>，或者使用[clear_volumes.sh](https://github.com/xz1996/GitLabLearning/blob/master/util/clear_volumes.sh) 这个简单脚本来处理它, 清除cache的原理是将相关的volume移除，当然，docker也有自带的清除命令，推荐将```docker system prune -f --volumes```加入到定时任务中。
 
 ### GitLab Runner 变量的优先级
 
